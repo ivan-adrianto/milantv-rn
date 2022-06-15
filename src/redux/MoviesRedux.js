@@ -14,6 +14,10 @@ export const {Types, Creators} = createActions({
   moviesSuccess: ['payload'],
   moviesFailure: ['error'],
 
+  // movie
+  movieRequest: ['data'],
+  movieSuccess: ['payload'],
+  movieFailure: ['error'],
 });
 
 /* ------------- Initial State ------------- */
@@ -25,6 +29,9 @@ export const INITIAL_STATE = Immutable({
   isLoadingMovies: false,
   dataMovies: null,
   errorMovies: null,
+  isLoadingMovie: false,
+  dataMovie: null,
+  errorMovie: null,
 });
 
 /* ------------- Reducers ------------- */
@@ -75,6 +82,28 @@ export const moviesFailure = (state, action) => {
   });
 };
 
+// Movie
+export const movieRequest = state =>
+  state.merge({isLoadingMovie: true, dataMovie: null});
+
+export const movieSuccess = (state, action) => {
+  const {payload} = action;
+  return state.merge({
+    isLoadingMovie: false,
+    errorMovie: null,
+    dataMovie: payload,
+    isLoggedIn: true,
+  });
+};
+
+export const movieFailure = (state, action) => {
+  const {error} = action;
+  return state.merge({
+    isLoadingMovie: false,
+    errorMovie: error,
+    dataMovie: null,
+  });
+};
 
 /* ------------- Hookup Reducers To Type ------------- */
 
@@ -89,4 +118,8 @@ export const moviesReducer = createReducer(INITIAL_STATE, {
   [Types.MOVIES_SUCCESS]: moviesSuccess,
   [Types.MOVIES_FAILURE]: moviesFailure,
 
+  // movie
+  [Types.MOVIE_REQUEST]: movieRequest,
+  [Types.MOVIE_SUCCESS]: movieSuccess,
+  [Types.MOVIE_FAILURE]: movieFailure,
 });

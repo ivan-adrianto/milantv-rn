@@ -1,9 +1,17 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const CustomText = ({style, children, onPress, ...props}) => {
+const CustomText = ({
+  style,
+  children,
+  onPress,
+  color,
+  size,
+  bold,
+  ...props
+}) => {
   return (
-    <Text onPress={onPress} style={[styles.text, style]}>
+    <Text onPress={onPress} style={[styles.text(color, size, bold), style]}>
       {children}
     </Text>
   );
@@ -12,8 +20,10 @@ const CustomText = ({style, children, onPress, ...props}) => {
 export default CustomText;
 
 const styles = StyleSheet.create({
-  text: {
+  text: (color, size, bold) => ({
     fontFamily: 'Roboto-Regular',
-    color: 'white',
-  },
+    color: color || 'white',
+    fontSize: size || 14,
+    fontWeight: bold ? 'bold' : 'normal',
+  }),
 });

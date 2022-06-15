@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import {WARNA_ABU_ABU} from '../../utils/constant';
 import {ScrollView} from 'react-native-gesture-handler';
 import * as Keychain from 'react-native-keychain';
 import {useDispatch, useSelector} from 'react-redux';
@@ -17,20 +16,21 @@ import {Creators as MoviesActions} from '../../redux/MoviesRedux';
 import {removeBearerToken} from '../../services/apiServices';
 import {
   IconGenre,
+  IconGenreActive,
   IconReview,
   IconSearch,
   IconShare,
-  ImageHeader,
 } from '../../assets';
 import {Text} from '../../components';
 import {useState} from 'react';
 import {useEffect} from 'react';
+import debounce from 'debounce';
 
-const Home = () => {
+const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const logout = () => dispatch(AuthActions.logout());
   const getGenres = () => dispatch(MoviesActions.genreRequest());
-  const getMovies = () => dispatch(MoviesActions.moviesRequest());
+  const getMovies = data => dispatch(MoviesActions.moviesRequest(data));
 
   const genres = useSelector(state => state.movies.dataGenre);
   const movies = useSelector(state => state.movies.dataMovies);
@@ -40,7 +40,14 @@ const Home = () => {
     getMovies();
   }, []);
 
+  useEffect(() => {
+    setShownGenres(genres?.slice(0, 4));
+  }, [genres]);
+
   const [activeGenre, setActiveGenre] = useState('');
+  const [showAllGenres, setShowAllGenres] = useState(false);
+  const [shownGenres, setShownGenres] = useState(genres?.slice(0, 4));
+  const [search, setSearch] = useState('');
 
   const logoutHandler = () => {
     Keychain.resetInternetCredentials('token');
@@ -48,31 +55,56 @@ const Home = () => {
     removeBearerToken();
   };
 
-  console.log('movies', movies);
-
   const onClickGenre = genre => {
-    setActiveGenre(genre);
+    if (genre === activeGenre) {
+      setActiveGenre('');
+      getMovies();
+    } else {
+      getMovies({title: search, category_id: genre.id});
+      setActiveGenre(genre);
+    }
   };
 
-  // const genres = ['Action', 'Romance', 'Thriller', 'Comedy'];
+  const callSearch = debounce(function (keyword) {
+    getMovies({title: keyword, category_id: activeGenre.id});
+    setSearch(keyword);
+  }, 500);
+
+  const handleMoreGenres = () => {
+    let index = shownGenres?.findIndex(genre => genre.id === activeGenre.id);
+    let data = [];
+    if (index > 3) {
+      data = [genres[index], ...genres.slice(0, 3)];
+    } else {
+      data = genres;
+    }
+    setShownGenres(showAllGenres ? data?.slice(0, 4) : data);
+    setShowAllGenres(!showAllGenres);
+  };
 
   return (
     <View style={styles.page}>
-      <View showsVerticalScrollIndicator={false}>
-        <TextInput style={styles.searchBar} />
+      <View>
+        <TextInput style={styles.searchBar} onChangeText={callSearch} />
         <IconSearch style={styles.searchIcon} />
         <View style={styles.genreHeader}>
           <Text style={styles.titleText}>Best Genre</Text>
-          <Text style={styles.moreGenre}>more {'>>'}</Text>
+          <TouchableOpacity onPress={handleMoreGenres}>
+            <Text style={styles.moreGenre}>
+              {!showAllGenres ? `more >>` : `<< less`}
+            </Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.genreContainer}>
-          {genres?.slice(0, 4)?.map((genre, index) => (
+          {shownGenres?.map((genre, index) => (
             <TouchableOpacity
-              onPress={() => setActiveGenre(genre)}
-              style={styles.genreItem}
+              onPress={() => onClickGenre(genre)}
+              style={styles.genreItem(activeGenre === genre)}
               key={index}>
-              <IconGenre />
-              <Text style={styles.genreItemText}>{genre.name}</Text>
+              {activeGenre === genre ? <IconGenreActive /> : <IconGenre />}
+              <Text style={styles.genreItemText(activeGenre === genre)}>
+                {genre.name}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -84,7 +116,12 @@ const Home = () => {
                 : 'Editor Picks Movies'}
             </Text>
             {movies?.map((item, index) => (
-              <View key={index} style={styles.movieItem}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('MovieDetail', {id: item.id})
+                }
+                key={index}
+                style={styles.movieItem}>
                 <Image
                   source={{uri: item?.banner}}
                   style={styles.movieThumbnail}
@@ -99,7 +136,7 @@ const Home = () => {
                   </View>
                   <IconShare height={18} />
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
@@ -150,22 +187,24 @@ const styles = StyleSheet.create({
   },
   genreContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     marginBottom: 18,
   },
-  genreItem: {
+  genreItem: active => ({
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: active ? '#FFC200FA' : 'white',
     marginRight: 5,
+    marginBottom: 5,
     borderRadius: 6,
     paddingVertical: 9,
     paddingHorizontal: 5,
-  },
-  genreItemText: {
+  }),
+  genreItemText: active => ({
     fontSize: 12,
-    color: 'black',
+    color: active ? 'white' : 'black',
     marginLeft: 4,
-  },
+  }),
   moviesContainer: {
     height: screenHeight - 230,
   },

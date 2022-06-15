@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, Splash, Login, SignUp} from '../pages';
+import {Home, Splash, Login, SignUp, MovieDetail} from '../pages';
 import {BottomNavigator} from '../components/';
 import {useDispatch, useSelector} from 'react-redux';
 import * as Keychain from 'react-native-keychain';
@@ -12,16 +12,26 @@ import Profile from '../pages/Profile';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const HomeStack = createStackNavigator();
+
+const HomeStackScreen = () => {
+  return (
+    <HomeStack.Navigator screenOptions={{headerShown: false}}>
+      <HomeStack.Screen name="Home" component={Home} />
+      <HomeStack.Screen name="MovieDetail" component={MovieDetail} />
+    </HomeStack.Navigator>
+  );
+};
 
 const MainApp = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="HomeTab"
       tabBar={props => <BottomNavigator {...props} />}
       screenOptions={{headerShown: false}}
       backBehavior="history">
       <Tab.Screen name="MyReviews" component={MyReviews} />
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="HomeTab" component={HomeStackScreen} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );

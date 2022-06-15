@@ -8,6 +8,8 @@ import IconGenre from './icon-genre.svg';
 import IconGenreActive from './icon-genre-active.svg';
 import IconSearch from './icon-search.svg';
 import IconShare from './icon-share.svg';
+import IconRating from './icon-rating.svg';
+import IconRatingActive from './icon-rating-active.svg';
 
 export {  
   IconHome,
@@ -19,5 +21,7 @@ export {
   IconGenre,
   IconGenreActive,
   IconSearch,
-  IconShare
+  IconShare,
+  IconRating,
+  IconRatingActive,
 };

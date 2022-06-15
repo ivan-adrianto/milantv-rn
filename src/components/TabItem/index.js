@@ -20,7 +20,7 @@ const TabItem = ({isFocused, onPress, onLongPress, label}) => {
     if (label === 'MyReviews')
       return isFocused ? <IconReviewActive /> : <IconReview />;
 
-    if (label === 'Home') return isFocused ? <IconHomeActive /> : <IconHome />;
+    if (label === 'HomeTab') return isFocused ? <IconHomeActive /> : <IconHome />;
 
     if (label === 'Profile') return <IconProfile width={25} height={25} />;
 
