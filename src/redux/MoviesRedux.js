@@ -27,12 +27,17 @@ export const {Types, Creators} = createActions({
   createReviewSuccess: ['payload'],
   createReviewFailure: ['error'],
   resetStateCreateReview: ['data'],
+
+  // get reviews by movie
+  reviewsByMovieRequest: ['data'],
+  reviewsByMovieSuccess: ['payload'],
+  reviewsByMovieFailure: ['error'],
 });
 
 /* ------------- Initial State ------------- */
 
 export const INITIAL_STATE = Immutable({
-  keyword: "",
+  keyword: '',
   isLoadingGenre: false,
   dataGenre: null,
   errorGenre: null,
@@ -45,6 +50,9 @@ export const INITIAL_STATE = Immutable({
   isLoadingCreateReview: false,
   dataCreateReview: null,
   errorCreateReview: null,
+  isLoadingReviewsByMovie: false,
+  dataReviewsByMovie: null,
+  errorReviewsByMovie: null,
 });
 
 /* ------------- Reducers ------------- */
@@ -76,7 +84,7 @@ export const genreFailure = (state, action) => {
 export const setKeyword = (state, action) => {
   const {data} = action;
   return state.merge({keyword: data});
-}
+};
 
 export const moviesRequest = state =>
   state.merge({isLoadingMovies: true, dataMovies: null});
@@ -146,13 +154,36 @@ export const createReviewFailure = (state, action) => {
   });
 };
 
-export const resetStateCreateReview = (state) => {  
+export const resetStateCreateReview = state => {
   return state.merge({
     isLoadingCreateReview: false,
     dataCreateReview: null,
     errorCreateReview: null,
   });
-}
+};
+
+// Reviews by movie
+export const reviewsByMovieRequest = state =>
+  state.merge({isLoadingReviewsByMovie: true, dataReviewsByMovie: null});
+
+export const reviewsByMovieSuccess = (state, action) => {
+  const {payload} = action;
+  return state.merge({
+    isLoadingReviewsByMovie: false,
+    errorReviewsByMovie: null,
+    dataReviewsByMovie: payload,
+    isLoggedIn: true,
+  });
+};
+
+export const reviewsByMovieFailure = (state, action) => {
+  const {error} = action;
+  return state.merge({
+    isLoadingReviewsByMovie: false,
+    errorReviewsByMovie: error,
+    dataReviewsByMovie: null,
+  });
+};
 
 /* ------------- Hookup Reducers To Type ------------- */
 
@@ -179,4 +210,8 @@ export const moviesReducer = createReducer(INITIAL_STATE, {
   [Types.CREATE_REVIEW_FAILURE]: createReviewFailure,
   [Types.RESET_STATE_CREATE_REVIEW]: resetStateCreateReview,
 
+  // create review
+  [Types.REVIEWS_BY_MOVIE_REQUEST]: reviewsByMovieRequest,
+  [Types.REVIEWS_BY_MOVIE_SUCCESS]: reviewsByMovieSuccess,
+  [Types.REVIEWS_BY_MOVIE_FAILURE]: reviewsByMovieFailure,
 });

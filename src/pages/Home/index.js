@@ -26,8 +26,10 @@ import {useState} from 'react';
 import {useEffect} from 'react';
 import debounce from 'debounce';
 import { useIsFocused } from '@react-navigation/native';
+const ENV = process.env
 
 const Home = ({navigation}) => {
+  console.log('ENV', ENV)
   const isFocused = useIsFocused()
 
   const dispatch = useDispatch();

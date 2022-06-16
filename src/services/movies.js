@@ -24,3 +24,10 @@ export async function createReview(data) {
   const res = await api.post(API.REVIEWS, data);
   return res;
 }
+
+// get reviews
+export async function getReviewsByMovie(movieId) {
+  console.log('movieId', movieId)
+  const res = await api.get(`${API.REVIEWS}/${movieId}`);
+  return res;
+}
