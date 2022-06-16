@@ -35,7 +35,6 @@ const MovieDetail = ({route, navigation}) => {
   const keyword = useSelector(state => state.movies.keyword);
   const dataCreateReview = useSelector(state => state.movies.dataCreateReview);
 
-
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -104,14 +103,16 @@ const MovieDetail = ({route, navigation}) => {
                       <Text color={'black'}>/10</Text>
                     </View>
                   </View>
-                  <TouchableOpacity
-                    style={styles.rating}
-                    onPress={() => setModalVisible(true)}>
-                    <IconRating height={20} width={20} />
-                    <Text color={'black'} size={14}>
-                      Rate This
-                    </Text>
-                  </TouchableOpacity>
+                  {!movie?.is_reviewed && (
+                    <TouchableOpacity
+                      style={styles.rating}
+                      onPress={() => setModalVisible(true)}>
+                      <IconRating height={20} width={20} />
+                      <Text color={'black'} size={14}>
+                        Rate This
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
             </View>
@@ -121,12 +122,19 @@ const MovieDetail = ({route, navigation}) => {
           </ScrollView>
         </View>
         <View style={styles.footer}>
-          <View style={styles.reviewFooter}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('MovieReviews', {
+                id: movie?.id,
+                title: `Reviews on ${movie?.title}`,
+              })
+            }
+            style={styles.reviewFooter}>
             <IconReview height={16} width={16} />
             <Text style={styles.reviewFooterText} color={'black'}>
               {movie?.total_comments}
             </Text>
-          </View>
+          </TouchableOpacity>
           <IconShare />
         </View>
       </View>

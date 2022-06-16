@@ -10,6 +10,7 @@ import IconSearch from './icon-search.svg';
 import IconShare from './icon-share.svg';
 import IconRating from './icon-rating.svg';
 import IconRatingActive from './icon-rating-active.svg';
+import IconBack from './icon-back.svg';
 
 export {  
   IconHome,
@@ -24,4 +25,5 @@ export {
   IconShare,
   IconRating,
   IconRatingActive,
+  IconBack,
 };

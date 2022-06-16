@@ -1,25 +1,41 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, Splash, Login, SignUp, MovieDetail} from '../pages';
+import {Home, Splash, Login, SignUp, MovieDetail, MovieReviews} from '../pages';
 import {BottomNavigator} from '../components/';
 import {useDispatch, useSelector} from 'react-redux';
 import * as Keychain from 'react-native-keychain';
 import {Creators as AuthActions} from '../redux/AuthRedux';
 import MyReviews from '../pages/MyReviews';
 import Profile from '../pages/Profile';
-import { addBearerToken } from '../services/apiServices';
+import {addBearerToken} from '../services/apiServices';
+import {IconBack} from '../assets';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
 
 const HomeStackScreen = () => {
+  const options = route => {
+    return {
+      headerShown: true,
+      title: route.params.title,
+      headerStyle: {backgroundColor: '#848282'},
+      headerTitleStyle: {color: 'white', fontSize: 18, fontWeight: 'bold'},
+      headerTintColor: 'white',
+      headerBackImage: () => <IconBack height={18} width={10} />,
+    };
+  };
   return (
     <HomeStack.Navigator screenOptions={{headerShown: false}}>
       <HomeStack.Screen name="Home" component={Home} />
       <HomeStack.Screen name="MovieDetail" component={MovieDetail} />
+      <HomeStack.Screen
+        options={({route}) => options(route)}
+        name="MovieReviews"
+        component={MovieReviews}
+      />
     </HomeStack.Navigator>
   );
 };
