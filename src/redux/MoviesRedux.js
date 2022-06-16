@@ -18,6 +18,12 @@ export const {Types, Creators} = createActions({
   movieRequest: ['data'],
   movieSuccess: ['payload'],
   movieFailure: ['error'],
+
+  // create review
+  createReviewRequest: ['data'],
+  createReviewSuccess: ['payload'],
+  createReviewFailure: ['error'],
+  resetStateCreateReview: ['data'],
 });
 
 /* ------------- Initial State ------------- */
@@ -32,6 +38,9 @@ export const INITIAL_STATE = Immutable({
   isLoadingMovie: false,
   dataMovie: null,
   errorMovie: null,
+  isLoadingCreateReview: false,
+  dataCreateReview: null,
+  errorCreateReview: null,
 });
 
 /* ------------- Reducers ------------- */
@@ -105,6 +114,37 @@ export const movieFailure = (state, action) => {
   });
 };
 
+// Create Review
+export const createReviewRequest = state =>
+  state.merge({isLoadingCreateReview: true, dataCreateReview: null});
+
+export const createReviewSuccess = (state, action) => {
+  const {payload} = action;
+  return state.merge({
+    isLoadingCreateReview: false,
+    errorCreateReview: null,
+    dataCreateReview: payload,
+    isLoggedIn: true,
+  });
+};
+
+export const createReviewFailure = (state, action) => {
+  const {error} = action;
+  return state.merge({
+    isLoadingCreateReview: false,
+    errorCreateReview: error,
+    dataCreateReview: null,
+  });
+};
+
+export const resetStateCreateReview = (state) => {  
+  return state.merge({
+    isLoadingCreateReview: false,
+    dataCreateReview: null,
+    errorCreateReview: null,
+  });
+}
+
 /* ------------- Hookup Reducers To Type ------------- */
 
 export const moviesReducer = createReducer(INITIAL_STATE, {
@@ -122,4 +162,11 @@ export const moviesReducer = createReducer(INITIAL_STATE, {
   [Types.MOVIE_REQUEST]: movieRequest,
   [Types.MOVIE_SUCCESS]: movieSuccess,
   [Types.MOVIE_FAILURE]: movieFailure,
+
+  // create review
+  [Types.CREATE_REVIEW_REQUEST]: createReviewRequest,
+  [Types.CREATE_REVIEW_SUCCESS]: createReviewSuccess,
+  [Types.CREATE_REVIEW_FAILURE]: createReviewFailure,
+  [Types.RESET_STATE_CREATE_REVIEW]: resetStateCreateReview,
+
 });

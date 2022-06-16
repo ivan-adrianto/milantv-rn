@@ -18,3 +18,9 @@ export async function getMovie(movieId) {
   const res = await api.get(`${API.GET_ALL_MOVIES}/${movieId}`);
   return res;
 }
+
+// create reviews
+export async function createReview(data) {
+  const res = await api.post(API.REVIEWS, data);
+  return res;
+}

@@ -1,4 +1,12 @@
-import {View, Image, StyleSheet, TextInput, ToastAndroid} from 'react-native';
+import {
+  View,
+  Image,
+  StyleSheet,
+  TextInput,
+  ToastAndroid,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SplashLogo} from '../../assets';
 import {Button, Text} from '../../components';
@@ -77,11 +85,13 @@ const Login = ({navigation}) => {
       </View>
       <Text style={styles.forgotPassword}>Forgot your password?</Text>
       <View style={styles.buttonContainer}>
-        <Button
-          type="login"
-          text={isLoading ? 'SIGNING IN...' : 'SIGN IN'}
-          onPress={submit}
-        />
+        <Button type={'login'} onPress={submit}>
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <Text color={'black'} bold size={18}>SIGN IN</Text>
+          )}
+        </Button>
       </View>
       <Text
         style={styles.noAccount}

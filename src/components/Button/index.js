@@ -20,7 +20,7 @@ import {Text} from 'react-native';
 import React from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-const ButtonLocal = ({text, type, onPress, ...props}) => {
+const ButtonLocal = ({children, type, onPress, ...props}) => {
   return (
     <TouchableOpacity
       style={{
@@ -41,7 +41,7 @@ const ButtonLocal = ({text, type, onPress, ...props}) => {
           fontWeight: 'bold',
           color: 'black',
         }}>
-        {text}
+        {children}
       </Text>
     </TouchableOpacity>
   );

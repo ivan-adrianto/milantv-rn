@@ -84,6 +84,7 @@ const Home = ({navigation}) => {
 
   return (
     <View style={styles.page}>
+      <Button title="LOGOUT" onPress={logoutHandler} />
       <View>
         <TextInput style={styles.searchBar} onChangeText={callSearch} />
         <IconSearch style={styles.searchIcon} />
@@ -140,7 +141,7 @@ const Home = ({navigation}) => {
             ))}
           </ScrollView>
         </View>
-        {/* <Button title="LOGOUT" onPress={logoutHandler} /> */}
+        
       </View>
     </View>
   );

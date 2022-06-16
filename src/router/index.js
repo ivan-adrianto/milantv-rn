@@ -9,6 +9,7 @@ import * as Keychain from 'react-native-keychain';
 import {Creators as AuthActions} from '../redux/AuthRedux';
 import MyReviews from '../pages/MyReviews';
 import Profile from '../pages/Profile';
+import { addBearerToken } from '../services/apiServices';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -49,6 +50,7 @@ const Router = () => {
     const token = await Keychain.getInternetCredentials('token');
     if (token) {
       restoreLoginSession();
+      addBearerToken(token.password);
     }
     setLoading(false);
   };

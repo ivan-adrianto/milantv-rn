@@ -3,7 +3,7 @@ import {
   Types as MoviesTypes,
   Creators as MoviesActions,
 } from '../redux/MoviesRedux';
-import {getAllMovies, getGenres, getMovie} from '../services/movies';
+import {createReview, getAllMovies, getGenres, getMovie} from '../services/movies';
 
 /* ---- Genre ---- */
 function* genreSaga() {
@@ -47,10 +47,26 @@ export function* movieRequestSaga() {
   yield takeLatest(MoviesTypes.MOVIE_REQUEST, movieSaga);
 }
 
+
+/* ---- Create Review ---- */
+function* createReviewSaga(action) {
+  try {
+    const res = yield call(createReview, action.data);
+    yield put(MoviesActions.createReviewSuccess(res.data.data));
+  } catch (error) {
+    yield put(MoviesActions.createReviewFailure(error.response.data?.message));
+  }
+}
+
+export function* createReviewRequestSaga() {
+  yield takeLatest(MoviesTypes.CREATE_REVIEW_REQUEST, createReviewSaga);
+}
+
 export function* moviesSaga() {
   yield all([
     call(genreRequestSaga),
     call(allMoviesRequestSaga),
     call(movieRequestSaga),
+    call(createReviewRequestSaga),
   ]);
 }

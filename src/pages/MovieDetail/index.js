@@ -31,12 +31,21 @@ const MovieDetail = ({route}) => {
   const getMovieDetail = data => dispatch(MoviesActions.movieRequest(data));
 
   const movie = useSelector(state => state.movies.dataMovie);
+  const movies = useSelector(state => state.movies.dataMovies);
+  const dataCreateReview = useSelector(state => state.movies.dataCreateReview);
 
-  const [modalVisible, setModalVisible] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     getMovieDetail(route.params.id);
   }, []);
+
+  useEffect(() => {
+    if (dataCreateReview) {
+      getMovieDetail(route.params.id);
+      getMovies();
+    }
+  }, [dataCreateReview]);
 
   const callSearch = debounce(function (keyword) {
     getMovies({title: keyword});
@@ -80,7 +89,9 @@ const MovieDetail = ({route}) => {
                       <Text color={'black'}>/10</Text>
                     </View>
                   </View>
-                  <TouchableOpacity style={styles.rating} onPress={() => setModalVisible(true)}>
+                  <TouchableOpacity
+                    style={styles.rating}
+                    onPress={() => setModalVisible(true)}>
                     <IconRating height={20} width={20} />
                     <Text color={'black'} size={14}>
                       Rate This
@@ -104,7 +115,11 @@ const MovieDetail = ({route}) => {
           <IconShare />
         </View>
       </View>
-      <ModalReview visible={modalVisible} onHide={() => setModalVisible(false)}/>
+      <ModalReview
+        visible={modalVisible}
+        onHide={() => setModalVisible(false)}
+        movieId={route.params.id}
+      />
     </View>
   );
 };

@@ -4,4 +4,5 @@ export const API = {
   GET_GENRES: '/movies/categories',
   GET_ALL_MOVIES: '/movies',
   GET_MOVIE_DETAIL: '/movies',
+  REVIEWS: '/movies/reviews',
 };
