@@ -25,19 +25,23 @@ import {Creators as MoviesActions} from '../../redux/MoviesRedux';
 import {Text} from '../../components';
 import ModalReview from './ModalReview';
 
-const MovieDetail = ({route}) => {
+const MovieDetail = ({route, navigation}) => {
   const dispatch = useDispatch();
   const getMovies = data => dispatch(MoviesActions.moviesRequest(data));
   const getMovieDetail = data => dispatch(MoviesActions.movieRequest(data));
+  const setKeyword = data => dispatch(MoviesActions.setKeyword(data));
 
   const movie = useSelector(state => state.movies.dataMovie);
-  const movies = useSelector(state => state.movies.dataMovies);
+  const keyword = useSelector(state => state.movies.keyword);
   const dataCreateReview = useSelector(state => state.movies.dataCreateReview);
 
+
   const [modalVisible, setModalVisible] = useState(false);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     getMovieDetail(route.params.id);
+    setSearch(keyword);
   }, []);
 
   useEffect(() => {
@@ -49,12 +53,23 @@ const MovieDetail = ({route}) => {
 
   const callSearch = debounce(function (keyword) {
     getMovies({title: keyword});
+    setKeyword(keyword);
+    navigation.navigate('Home');
   }, 500);
+
+  const onSearch = keyword => {
+    callSearch(keyword);
+    setSearch(keyword);
+  };
 
   return (
     <View style={styles.page}>
       <View>
-        <TextInput style={styles.searchBar} onChangeText={callSearch} />
+        <TextInput
+          style={styles.searchBar}
+          onChangeText={onSearch}
+          value={search}
+        />
         <IconSearch style={styles.searchIcon} />
       </View>
       <View style={styles.contentContainer}>
@@ -225,6 +240,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     paddingVertical: 10,
     paddingHorizontal: 10,
+    backgroundColor: 'white',
+    marginBottom: 3,
   },
   reviewFooter: {
     flexDirection: 'row',

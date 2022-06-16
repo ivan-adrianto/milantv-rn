@@ -25,20 +25,29 @@ import {Text} from '../../components';
 import {useState} from 'react';
 import {useEffect} from 'react';
 import debounce from 'debounce';
+import { useIsFocused } from '@react-navigation/native';
 
 const Home = ({navigation}) => {
+  const isFocused = useIsFocused()
+
   const dispatch = useDispatch();
   const logout = () => dispatch(AuthActions.logout());
   const getGenres = () => dispatch(MoviesActions.genreRequest());
   const getMovies = data => dispatch(MoviesActions.moviesRequest(data));
+  const setKeyword = data => dispatch(MoviesActions.setKeyword(data));
 
   const genres = useSelector(state => state.movies.dataGenre);
   const movies = useSelector(state => state.movies.dataMovies);
+  const keyword = useSelector(state => state.movies.keyword);
 
   useEffect(() => {
     getGenres();
     getMovies();
   }, []);
+
+  useEffect(() => {
+    setSearch(keyword)
+  },[isFocused])
 
   useEffect(() => {
     setShownGenres(genres?.slice(0, 4));
@@ -47,7 +56,7 @@ const Home = ({navigation}) => {
   const [activeGenre, setActiveGenre] = useState('');
   const [showAllGenres, setShowAllGenres] = useState(false);
   const [shownGenres, setShownGenres] = useState(genres?.slice(0, 4));
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("")
 
   const logoutHandler = () => {
     Keychain.resetInternetCredentials('token');
@@ -60,15 +69,20 @@ const Home = ({navigation}) => {
       setActiveGenre('');
       getMovies();
     } else {
-      getMovies({title: search, category_id: genre.id});
+      getMovies({title: keyword, category_id: genre.id});
       setActiveGenre(genre);
     }
   };
 
   const callSearch = debounce(function (keyword) {
     getMovies({title: keyword, category_id: activeGenre.id});
-    setSearch(keyword);
+    setKeyword(keyword);
   }, 500);
+
+  const onChangeText = text => {
+    callSearch(text);
+    setSearch(text);
+  }
 
   const handleMoreGenres = () => {
     let index = shownGenres?.findIndex(genre => genre.id === activeGenre.id);
@@ -86,7 +100,7 @@ const Home = ({navigation}) => {
     <View style={styles.page}>
       <Button title="LOGOUT" onPress={logoutHandler} />
       <View>
-        <TextInput style={styles.searchBar} onChangeText={callSearch} />
+        <TextInput style={styles.searchBar} onChangeText={onChangeText} value={search} />
         <IconSearch style={styles.searchIcon} />
         <View style={styles.genreHeader}>
           <Text style={styles.titleText}>Best Genre</Text>

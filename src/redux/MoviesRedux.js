@@ -9,6 +9,9 @@ export const {Types, Creators} = createActions({
   genreSuccess: ['payload'],
   genreFailure: ['error'],
 
+  // setKeyword
+  setKeyword: ['data'],
+
   // movies
   moviesRequest: ['data'],
   moviesSuccess: ['payload'],
@@ -29,6 +32,7 @@ export const {Types, Creators} = createActions({
 /* ------------- Initial State ------------- */
 
 export const INITIAL_STATE = Immutable({
+  keyword: "",
   isLoadingGenre: false,
   dataGenre: null,
   errorGenre: null,
@@ -69,6 +73,11 @@ export const genreFailure = (state, action) => {
 };
 
 // Movies
+export const setKeyword = (state, action) => {
+  const {data} = action;
+  return state.merge({keyword: data});
+}
+
 export const moviesRequest = state =>
   state.merge({isLoadingMovies: true, dataMovies: null});
 
@@ -154,6 +163,7 @@ export const moviesReducer = createReducer(INITIAL_STATE, {
   [Types.GENRE_FAILURE]: genreFailure,
 
   // movies
+  [Types.SET_KEYWORD]: setKeyword,
   [Types.MOVIES_REQUEST]: moviesRequest,
   [Types.MOVIES_SUCCESS]: moviesSuccess,
   [Types.MOVIES_FAILURE]: moviesFailure,
