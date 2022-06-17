@@ -17,7 +17,7 @@ import {
 
 const TabItem = ({isFocused, onPress, onLongPress, label}) => {
   const Icon = () => {
-    if (label === 'MyReviews')
+    if (label === 'Your Reviews')
       return isFocused ? <IconReviewActive /> : <IconReview />;
 
     if (label === 'HomeTab') return isFocused ? <IconHomeActive /> : <IconHome />;

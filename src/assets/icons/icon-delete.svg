@@ -1,0 +1,10 @@
+<svg width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<ellipse cx="9.5" cy="10" rx="9.5" ry="10" fill="#F7A707"/>
+<ellipse cx="9.5" cy="10" rx="9.5" ry="10" fill="url(#pattern0)"/>
+<defs>
+<pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_10_107" transform="translate(-0.0263158) scale(0.00548246 0.00520833)"/>
+</pattern>
+<image id="image0_10_107" width="192" height="192" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAMAAABlApw1AAAARVBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////////9SnXPCAAAAFnRSTlMABwgPGBktW4CCg5mdx8jN4+309ff97zQ/kgAAARlJREFUeAHt0oVxg1EQg8Ez27+Zrv9SU0JQL7RfBdoZlT6ZJEmSJEmStv3Gtr98f1qQ358XpPfnBen9eUF6f1qQ358XZPePF/TgAAAAAAAAAAAAPhEAQCBJkjocAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMB4wLOjPSvdtaNdK925o50r3aGjHSrdpqNtKt3i0cEei4q372D7yre6d6z7qgY0daypRjQ/dajTrIa0vHSky7IGtY4ILusa1jLwouOyBjaf7v2l3XazGttq/+gv67Ff1fgWm8P5+uxP9ryeD5tFvStJkiRJkiTpBRj5TUjHjtJyAAAAAElFTkSuQmCC"/>
+</defs>
+</svg>

@@ -65,12 +65,10 @@ export function* createReviewRequestSaga() {
 
 /* ---- Reviews By Movie ---- */
 function* reviewsByMovieSaga(action) {
-  console.log('action', action)
   try {
     const res = yield call(getReviewsByMovie, action.data);
     yield put(MoviesActions.reviewsByMovieSuccess(res.data.data));
   } catch (error) {
-    console.log('error', error)
     yield put(MoviesActions.reviewsByMovieFailure(error.response.data?.message));
   }
 }

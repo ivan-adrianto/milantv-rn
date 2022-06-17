@@ -27,7 +27,6 @@ export async function createReview(data) {
 
 // get reviews
 export async function getReviewsByMovie(movieId) {
-  console.log('movieId', movieId)
   const res = await api.get(`${API.REVIEWS}/${movieId}`);
   return res;
 }

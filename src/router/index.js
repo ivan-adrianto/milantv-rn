@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Home, Splash, Login, SignUp, MovieDetail, MovieReviews} from '../pages';
@@ -16,17 +16,18 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
 
-const HomeStackScreen = () => {
-  const options = route => {
-    return {
-      headerShown: true,
-      title: route.params.title,
-      headerStyle: {backgroundColor: '#848282'},
-      headerTitleStyle: {color: 'white', fontSize: 18, fontWeight: 'bold'},
-      headerTintColor: 'white',
-      headerBackImage: () => <IconBack height={18} width={10} />,
-    };
+const options = route => {
+  return {
+    headerShown: true,
+    title: route.name === 'MovieReviews' ? route.params.title : 'Your Reviews',
+    headerStyle: {backgroundColor: '#848282'},
+    headerTitleStyle: {color: 'white', fontSize: 18, fontWeight: 'bold'},
+    headerTintColor: 'white',
+    headerBackImage: () => <IconBack height={18} width={10} />,
   };
+};
+
+const HomeStackScreen = () => {
   return (
     <HomeStack.Navigator screenOptions={{headerShown: false}}>
       <HomeStack.Screen name="Home" component={Home} />
@@ -47,7 +48,11 @@ const MainApp = () => {
       tabBar={props => <BottomNavigator {...props} />}
       screenOptions={{headerShown: false}}
       backBehavior="history">
-      <Tab.Screen name="MyReviews" component={MyReviews} />
+      <Tab.Screen
+        name="MyReviews"
+        component={MyReviews}
+        options={({route}) => options(route)}
+      />
       <Tab.Screen name="HomeTab" component={HomeStackScreen} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>

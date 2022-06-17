@@ -11,6 +11,7 @@ import IconShare from './icon-share.svg';
 import IconRating from './icon-rating.svg';
 import IconRatingActive from './icon-rating-active.svg';
 import IconBack from './icon-back.svg';
+import IconDelete from './icon-delete.svg'
 
 export {  
   IconHome,
@@ -26,4 +27,5 @@ export {
   IconRating,
   IconRatingActive,
   IconBack,
+  IconDelete
 };
