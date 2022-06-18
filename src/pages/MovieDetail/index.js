@@ -40,8 +40,12 @@ const MovieDetail = ({route, navigation}) => {
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
 
+
   useEffect(() => {
     getMovieDetail(route.params.id);
+  },[isFocused])
+
+  useEffect(() => {
     setSearch(keyword);
   }, []);
 

@@ -54,7 +54,11 @@ const MainApp = () => {
         options={({route}) => options(route)}
       />
       <Tab.Screen name="HomeTab" component={HomeStackScreen} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{tabBarVisible: false}}
+      />
     </Tab.Navigator>
   );
 };
