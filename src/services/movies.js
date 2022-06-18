@@ -30,3 +30,27 @@ export async function getReviewsByMovie(movieId) {
   const res = await api.get(`${API.REVIEWS}/${movieId}`);
   return res;
 }
+
+// get my reviews
+export async function getMyReviews() {
+  const res = await api.get(`${API.MY_REVIEWS}`);
+  return res;
+}
+
+// get my reviews
+export async function getReviewDetail(id) {
+  const res = await api.get(`${API.MY_REVIEWS}/${id}`);
+  return res;
+}
+
+// edit review
+export async function editReview(data) {
+  const res = await api.put(API.REVIEWS, data);
+  return res;
+}
+
+// edit review
+export async function deleteReview(reviewId) {
+  const res = await api.delete(`${API.REVIEWS}/${reviewId}`);
+  return res;
+}

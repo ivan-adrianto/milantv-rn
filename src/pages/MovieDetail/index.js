@@ -22,10 +22,12 @@ import {
 import {useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {Creators as MoviesActions} from '../../redux/MoviesRedux';
-import {Text} from '../../components';
-import ModalReview from './ModalReview';
+import {Text, ModalCreateReview, ModalEditReview} from '../../components';
+import {useIsFocused} from '@react-navigation/native';
 
 const MovieDetail = ({route, navigation}) => {
+  const isFocused = useIsFocused();
+
   const dispatch = useDispatch();
   const getMovies = data => dispatch(MoviesActions.moviesRequest(data));
   const getMovieDetail = data => dispatch(MoviesActions.movieRequest(data));
@@ -35,7 +37,7 @@ const MovieDetail = ({route, navigation}) => {
   const keyword = useSelector(state => state.movies.keyword);
   const dataCreateReview = useSelector(state => state.movies.dataCreateReview);
 
-  const [modalVisible, setModalVisible] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
@@ -106,7 +108,7 @@ const MovieDetail = ({route, navigation}) => {
                   {!movie?.is_reviewed && (
                     <TouchableOpacity
                       style={styles.rating}
-                      onPress={() => setModalVisible(true)}>
+                      onPress={() => setShowModal(true)}>
                       <IconRating height={20} width={20} />
                       <Text color={'black'} size={14}>
                         Rate This
@@ -138,9 +140,9 @@ const MovieDetail = ({route, navigation}) => {
           <IconShare />
         </View>
       </View>
-      <ModalReview
-        visible={modalVisible}
-        onHide={() => setModalVisible(false)}
+      <ModalCreateReview
+        visible={showModal}
+        onHide={() => setShowModal(false)}
         movieId={route.params.id}
       />
     </View>

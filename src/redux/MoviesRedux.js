@@ -32,6 +32,28 @@ export const {Types, Creators} = createActions({
   reviewsByMovieRequest: ['data'],
   reviewsByMovieSuccess: ['payload'],
   reviewsByMovieFailure: ['error'],
+
+  // my reviews
+  myReviewsRequest: ['data'],
+  myReviewsSuccess: ['payload'],
+  myReviewsFailure: ['error'],
+
+  // detail review
+  detailReviewRequest: ['data'],
+  detailReviewSuccess: ['payload'],
+  detailReviewFailure: ['error'],
+
+  // edit review
+  editReviewRequest: ['data'],
+  editReviewSuccess: ['payload'],
+  editReviewFailure: ['error'],
+  resetStateEditReview: ['data'],
+
+  // delete review
+  deleteReviewRequest: ['data'],
+  deleteReviewSuccess: ['payload'],
+  deleteReviewFailure: ['error'],
+  resetStateDeleteReview: ['data'],
 });
 
 /* ------------- Initial State ------------- */
@@ -53,6 +75,18 @@ export const INITIAL_STATE = Immutable({
   isLoadingReviewsByMovie: false,
   dataReviewsByMovie: null,
   errorReviewsByMovie: null,
+  isLoadingMyReviews: false,
+  dataMyReviews: null,
+  errorMyReviews: null,
+  isLoadingDetailReview: false,
+  dataDetailReview: null,
+  errorDetailReview: null,
+  isLoadingEditReview: false,
+  dataEditReview: null,
+  errorEditReview: null,
+  isLoadingDeleteReview: false,
+  dataDeleteReview: null,
+  errorDeleteReview: null,
 });
 
 /* ------------- Reducers ------------- */
@@ -185,6 +219,114 @@ export const reviewsByMovieFailure = (state, action) => {
   });
 };
 
+// My Reviews
+export const myReviewsRequest = state =>
+  state.merge({isLoadingMyReviews: true, dataMyReviews: null});
+
+export const myReviewsSuccess = (state, action) => {
+  const {payload} = action;
+  return state.merge({
+    isLoadingMyReviews: false,
+    errorMyReviews: null,
+    dataMyReviews: payload,
+    isLoggedIn: true,
+  });
+};
+
+export const myReviewsFailure = (state, action) => {
+  const {error} = action;
+  return state.merge({
+    isLoadingMyReviews: false,
+    errorMyReviews: error,
+    dataMyReviews: null,
+  });
+};
+
+// Detail Review
+export const detailReviewRequest = state =>
+  state.merge({isLoadingDetailReview: true, dataDetailReview: null});
+
+export const detailReviewSuccess = (state, action) => {
+  const {payload} = action;
+  return state.merge({
+    isLoadingDetailReview: false,
+    errorDetailReview: null,
+    dataDetailReview: payload,
+    isLoggedIn: true,
+  });
+};
+
+export const detailReviewFailure = (state, action) => {
+  const {error} = action;
+  return state.merge({
+    isLoadingDetailReview: false,
+    errorDetailReview: error,
+    dataDetailReview: null,
+  });
+};
+
+// Edit Review
+export const editReviewRequest = state =>
+  state.merge({isLoadingEditReview: true, dataEditReview: null});
+
+export const editReviewSuccess = (state, action) => {
+  const {payload} = action;
+  return state.merge({
+    isLoadingEditReview: false,
+    errorEditReview: null,
+    dataEditReview: payload,
+    isLoggedIn: true,
+  });
+};
+
+export const editReviewFailure = (state, action) => {
+  const {error} = action;
+  return state.merge({
+    isLoadingEditReview: false,
+    errorEditReview: error,
+    dataEditReview: null,
+  });
+};
+
+export const resetStateEditReview = state => {
+  return state.merge({
+    isLoadingEditReview: false,
+    dataEditReview: null,
+    errorEditReview: null,
+  });
+};
+
+// Delete Review
+export const deleteReviewRequest = state =>
+  state.merge({isLoadingDeleteReview: true, dataDeleteReview: null});
+
+export const deleteReviewSuccess = (state, action) => {
+  const {payload} = action;
+  return state.merge({
+    isLoadingDeleteReview: false,
+    errorDeleteReview: null,
+    dataDeleteReview: payload,
+    isLoggedIn: true,
+  });
+};
+
+export const deleteReviewFailure = (state, action) => {
+  const {error} = action;
+  return state.merge({
+    isLoadingDeleteReview: false,
+    errorDeleteReview: error,
+    dataDeleteReview: null,
+  });
+};
+
+export const resetStateDeleteReview = state => {
+  return state.merge({
+    isLoadingDeleteReview: false,
+    dataDeleteReview: null,
+    errorDeleteReview: null,
+  });
+};
+
 /* ------------- Hookup Reducers To Type ------------- */
 
 export const moviesReducer = createReducer(INITIAL_STATE, {
@@ -214,4 +356,26 @@ export const moviesReducer = createReducer(INITIAL_STATE, {
   [Types.REVIEWS_BY_MOVIE_REQUEST]: reviewsByMovieRequest,
   [Types.REVIEWS_BY_MOVIE_SUCCESS]: reviewsByMovieSuccess,
   [Types.REVIEWS_BY_MOVIE_FAILURE]: reviewsByMovieFailure,
+
+  // my reviews
+  [Types.MY_REVIEWS_REQUEST]: myReviewsRequest,
+  [Types.MY_REVIEWS_SUCCESS]: myReviewsSuccess,
+  [Types.MY_REVIEWS_FAILURE]: myReviewsFailure,
+
+  // detail review
+  [Types.DETAIL_REVIEW_REQUEST]: detailReviewRequest,
+  [Types.DETAIL_REVIEW_SUCCESS]: detailReviewSuccess,
+  [Types.DETAIL_REVIEW_FAILURE]: detailReviewFailure,
+
+  // edit review
+  [Types.EDIT_REVIEW_REQUEST]: editReviewRequest,
+  [Types.EDIT_REVIEW_SUCCESS]: editReviewSuccess,
+  [Types.EDIT_REVIEW_FAILURE]: editReviewFailure,
+  [Types.RESET_STATE_EDIT_REVIEW]: resetStateEditReview,
+
+  // edit review
+  [Types.DELETE_REVIEW_REQUEST]: deleteReviewRequest,
+  [Types.DELETE_REVIEW_SUCCESS]: deleteReviewSuccess,
+  [Types.DELETE_REVIEW_FAILURE]: deleteReviewFailure,
+  [Types.RESET_STATE_DELETE_REVIEW]: resetStateDeleteReview,
 });

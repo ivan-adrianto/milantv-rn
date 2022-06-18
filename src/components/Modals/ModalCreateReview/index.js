@@ -8,10 +8,10 @@ import {
   ToastAndroid,
 } from 'react-native';
 import React, {useState} from 'react';
-import {Text} from '../../components';
+import Text from '../../Text';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import {useDispatch} from 'react-redux';
-import {Creators as MoviesActions} from '../../redux/MoviesRedux';
+import {Creators as MoviesActions} from '../../../redux/MoviesRedux';
 import {useSelector} from 'react-redux';
 import {useEffect} from 'react';
 
@@ -20,6 +20,7 @@ const ModalReview = ({visible, onHide, movieId}) => {
   const createReview = data =>
     dispatch(MoviesActions.createReviewRequest(data));
   const resetState = () => dispatch(MoviesActions.resetStateCreateReview());
+  const getMyReviews = () => dispatch(MoviesActions.myReviewsRequest());
 
   const dataReview = useSelector(state => state.movies.dataCreateReview);
   const error = useSelector(state => state.movies.errorCreateReview);
@@ -33,10 +34,11 @@ const ModalReview = ({visible, onHide, movieId}) => {
     if (dataReview) {
       showToastWithGravity('Review created successfully');
       onHide();
-      resetState()
+      resetState();
+      getMyReviews();
     } else if (error) {
       showToastWithGravity(error);
-      resetState()
+      resetState();
     }
   }, [dataReview, error]);
 

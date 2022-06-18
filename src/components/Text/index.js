@@ -11,7 +11,7 @@ const CustomText = ({
   ...props
 }) => {
   return (
-    <Text onPress={onPress} style={[styles.text(color, size, bold), style]}>
+    <Text onPress={onPress} style={[styles.text(color, size, bold), style]} {...props}>
       {children}
     </Text>
   );
