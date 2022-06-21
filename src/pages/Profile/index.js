@@ -10,11 +10,17 @@ import React from 'react';
 import {IconCheck, IconClose, IconEdit, ImageHeader} from '../../assets';
 import {Button, Text} from '../../components';
 import {useState} from 'react';
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { uriFormatter } from '../../helpers/uri';
+import {useEffect} from 'react';
+import {useSelector} from 'react-redux';
+import {uriFormatter} from '../../helpers/uri';
+import {useDispatch} from 'react-redux';
+import {Creators as AuthActions} from '../../redux/AuthRedux';
+import * as Keychain from 'react-native-keychain';
+import {removeBearerToken} from '../../services/apiServices';
 
 const Profile = ({navigation}) => {
+  const dispatch = useDispatch();
+  const logout = () => dispatch(AuthActions.logout());
   const data = useSelector(state => state.profile.dataGetProfile);
 
   const [name, setName] = useState('');
@@ -25,7 +31,14 @@ const Profile = ({navigation}) => {
     setName(data?.fullname);
     setUsername(data?.username);
     setEmail(data?.email);
-  },[])
+  }, []);
+
+
+  const logoutHandler = () => {
+    Keychain.resetInternetCredentials('token');
+    logout();
+    removeBearerToken();
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.page}>
@@ -42,7 +55,10 @@ const Profile = ({navigation}) => {
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.photoProfileContainer}>
-          <Image source={{uri: uriFormatter(data?.avatar)}} style={styles.photoProfile} />
+          <Image
+            source={{uri: uriFormatter(data?.avatar)}}
+            style={styles.photoProfile}
+          />
           <IconEdit height={30} width={30} style={styles.iconEdit} />
         </View>
         <TextInput
@@ -66,9 +82,9 @@ const Profile = ({navigation}) => {
           value={email}
           onChangeText={text => setEmail(text)}
         />
-        <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={logoutHandler} style={styles.buttonContainer}>
           <Button type={'login'}>LOGOUT</Button>
-        </View>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

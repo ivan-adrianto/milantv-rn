@@ -9,11 +9,8 @@ import {
   Image,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import * as Keychain from 'react-native-keychain';
 import {useDispatch, useSelector} from 'react-redux';
-import {Creators as AuthActions} from '../../redux/AuthRedux';
 import {Creators as MoviesActions} from '../../redux/MoviesRedux';
-import {removeBearerToken} from '../../services/apiServices';
 import {
   IconGenre,
   IconGenreActive,
@@ -31,7 +28,6 @@ const Home = ({navigation}) => {
   const isFocused = useIsFocused()
 
   const dispatch = useDispatch();
-  const logout = () => dispatch(AuthActions.logout());
   const getGenres = () => dispatch(MoviesActions.genreRequest());
   const getMovies = () => dispatch(MoviesActions.moviesRequest());
   const setKeyword = data => dispatch(MoviesActions.setKeyword(data));
@@ -57,12 +53,6 @@ const Home = ({navigation}) => {
   const [showAllGenres, setShowAllGenres] = useState(false);
   const [shownGenres, setShownGenres] = useState(genres?.slice(0, 4));
   const [search, setSearch] = useState("")
-
-  const logoutHandler = () => {
-    Keychain.resetInternetCredentials('token');
-    logout();
-    removeBearerToken();
-  };
 
   const onClickGenre = genre => {
     if (genre === activeGenre) {
@@ -98,7 +88,6 @@ const Home = ({navigation}) => {
 
   return (
     <View style={styles.page}>
-      <Button title="LOGOUT" onPress={logoutHandler} />
       <View>
         <TextInput style={styles.searchBar} onChangeText={onChangeText} value={search} />
         <IconSearch style={styles.searchIcon} />
