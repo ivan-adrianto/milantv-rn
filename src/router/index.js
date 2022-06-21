@@ -7,6 +7,7 @@ import {BottomNavigator} from '../components/';
 import {useDispatch, useSelector} from 'react-redux';
 import * as Keychain from 'react-native-keychain';
 import {Creators as AuthActions} from '../redux/AuthRedux';
+import {Creators as ProfileActions} from '../redux/ProfileRedux';
 import MyReviews from '../pages/MyReviews';
 import Profile from '../pages/Profile';
 import {addBearerToken} from '../services/apiServices';
@@ -66,6 +67,7 @@ const MainApp = () => {
 const Router = () => {
   const dispatch = useDispatch();
   const restoreLoginSession = () => dispatch(AuthActions.restoreLoginSession());
+  const getProfile = () => dispatch(ProfileActions.getProfileRequest());
 
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
@@ -76,6 +78,7 @@ const Router = () => {
     if (token) {
       restoreLoginSession();
       addBearerToken(token.password);
+      getProfile()
     }
     setLoading(false);
   };

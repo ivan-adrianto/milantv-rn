@@ -1,14 +1,39 @@
-import {Image, ScrollView, StyleSheet, TextInput, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import {IconCheck, IconClose, IconEdit, ImageHeader} from '../../assets';
 import {Button, Text} from '../../components';
+import {useState} from 'react';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { uriFormatter } from '../../helpers/uri';
 
-const Profile = () => {
+const Profile = ({navigation}) => {
+  const data = useSelector(state => state.profile.dataGetProfile);
+
+  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    setName(data?.fullname);
+    setUsername(data?.username);
+    setEmail(data?.email);
+  },[])
+
   return (
     <ScrollView contentContainerStyle={styles.page}>
       <View style={styles.header}>
         <View style={styles.headerTitle}>
-          <IconClose height={35} width={35} />
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <IconClose height={35} width={35} />
+          </TouchableOpacity>
           <Text bold size={18} style={styles.titleText}>
             Edit Profile
           </Text>
@@ -17,29 +42,29 @@ const Profile = () => {
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.photoProfileContainer}>
-          <Image source={ImageHeader} style={styles.photoProfile} />
+          <Image source={{uri: uriFormatter(data?.avatar)}} style={styles.photoProfile} />
           <IconEdit height={30} width={30} style={styles.iconEdit} />
         </View>
         <TextInput
           placeholderTextColor={'white'}
           style={styles.input}
           placeholder="Name"
+          value={name}
+          onChangeText={text => setName(text)}
         />
         <TextInput
           placeholderTextColor={'white'}
           style={styles.input}
           placeholder="Username"
+          value={username}
+          onChangeText={text => setUsername(text)}
         />
         <TextInput
           placeholderTextColor={'white'}
           style={styles.input}
           placeholder="Email"
-        />
-        <TextInput
-          placeholderTextColor={'white'}
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
+          value={email}
+          onChangeText={text => setEmail(text)}
         />
         <View style={styles.buttonContainer}>
           <Button type={'login'}>LOGOUT</Button>
@@ -101,6 +126,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: 'center',
-    marginTop: 50
-  }
+    marginTop: 50,
+  },
 });

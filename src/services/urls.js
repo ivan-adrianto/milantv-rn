@@ -6,4 +6,5 @@ export const API = {
   GET_MOVIE_DETAIL: '/movies',
   REVIEWS: '/movies/reviews',
   MY_REVIEWS: 'movies/reviews/my-reviews',
+  GET_USER_DATA: '/users',
 };

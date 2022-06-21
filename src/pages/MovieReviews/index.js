@@ -6,7 +6,7 @@ import {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {Creators as MoviesActions} from '../../redux/MoviesRedux';
 import {useSelector} from 'react-redux';
-import {IP_ADDRESS} from '../../../environment';
+import { uriFormatter } from '../../helpers/uri';
 
 const MovieReviews = ({route}) => {
   const dispatch = useDispatch();
@@ -17,10 +17,6 @@ const MovieReviews = ({route}) => {
   useEffect(() => {
     getMovieReviews(route.params.id);
   }, []);
-
-  const uriFormatter = string => {
-    return string?.replace('localhost:', `http://${IP_ADDRESS}:`);
-  };
 
   return (
     <ScrollView contentContainerStyle={styles.page}>

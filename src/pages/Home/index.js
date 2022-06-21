@@ -33,7 +33,7 @@ const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const logout = () => dispatch(AuthActions.logout());
   const getGenres = () => dispatch(MoviesActions.genreRequest());
-  const getMovies = data => dispatch(MoviesActions.moviesRequest(data));
+  const getMovies = () => dispatch(MoviesActions.moviesRequest());
   const setKeyword = data => dispatch(MoviesActions.setKeyword(data));
 
   const genres = useSelector(state => state.movies.dataGenre);

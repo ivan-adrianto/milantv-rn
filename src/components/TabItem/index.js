@@ -1,5 +1,12 @@
 import React from 'react';
-import {Dimensions, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import {useSelector} from 'react-redux';
 import {
   IconHome,
   IconHomeActive,
@@ -7,22 +14,27 @@ import {
   IconReview,
   IconReviewActive,
 } from '../../assets';
-import {
-  WARNA_UTAMA,
-  WARNA_DISABLE,
-  REVIEW,
-  PROFILE,
-  HOME,
-} from '../../utils/constant';
+import { uriFormatter } from '../../helpers/uri';
+import {WARNA_UTAMA, WARNA_DISABLE} from '../../utils/constant';
 
 const TabItem = ({isFocused, onPress, onLongPress, label}) => {
+  const data = useSelector(state => state.profile.dataGetProfile);
+
+  const Profile = () => {
+    return data?.avatar ? (
+      <Image source={{uri: uriFormatter(data?.avatar)}} style={styles.profilePicture} />
+    ) : (
+      <IconProfile width={25} height={25} />
+    );
+  };
   const Icon = () => {
     if (label === 'Your Reviews')
       return isFocused ? <IconReviewActive /> : <IconReview />;
 
-    if (label === 'HomeTab') return isFocused ? <IconHomeActive /> : <IconHome />;
+    if (label === 'HomeTab')
+      return isFocused ? <IconHomeActive /> : <IconHome />;
 
-    if (label === 'Profile') return <IconProfile width={25} height={25} />;
+    if (label === 'Profile') return <Profile />;
 
     return <IconHome />;
   };
@@ -51,4 +63,9 @@ const styles = StyleSheet.create({
     color: isFocused ? WARNA_UTAMA : WARNA_DISABLE,
     marginTop: 8,
   }),
+  profilePicture: {
+    height: 25,
+    width: 25,
+    borderRadius: 50,
+  },
 });

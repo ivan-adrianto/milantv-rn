@@ -1,6 +1,7 @@
 import {call, put, all, takeLatest} from 'redux-saga/effects';
 import {register, login} from '../services/auth';
 import {Types as AuthTypes, Creators as AuthActions} from '../redux/AuthRedux';
+import {Types as ProfileTypes, Creators as ProfileActions} from '../redux/ProfileRedux';
 import {addBearerToken} from '../services/apiServices';
 import * as Keychain from 'react-native-keychain';
 
@@ -29,6 +30,7 @@ function* loginSaga(action) {
     yield put(AuthActions.loginSuccess(res.data.data));
     yield call(addBearerToken, res.data.data.token)
     Keychain.setInternetCredentials('token', 'token', res.data.data.token);
+    yield put(ProfileActions.getProfileRequest());
   } catch (error) {
     yield put(AuthActions.loginFailure(error.response?.data?.message));
   }
