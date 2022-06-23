@@ -5,9 +5,10 @@ import {
   TextInput,
   ToastAndroid,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
-import {Button} from '../../components';
+import {Button, Text} from '../../components';
 import {IconEdit, SignUpImage} from '../../assets';
 import {useDispatch, useSelector} from 'react-redux';
 import {Creators as AuthActions} from '../../redux/AuthRedux';
@@ -130,9 +131,10 @@ const SignUp = ({navigation}) => {
       <View style={styles.buttonContainer}>
         <Button
           type="login"
-          text={isLoading ? 'SIGNING UP...' : 'SIGN UP'}
           onPress={submit}
-        />
+        >
+          {isLoading ? <ActivityIndicator/> : <Text color={'black'} bold size={18} >SIGN UP</Text> }
+        </Button>
       </View>
     </View>
   );

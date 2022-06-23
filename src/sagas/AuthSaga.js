@@ -13,6 +13,7 @@ function* registerSaga(action) {
     yield call(addBearerToken, res.data.data.token)
     Keychain.setInternetCredentials('token', 'token', res.data.data.token);
     yield put(AuthActions.registerSuccess(res.data));
+    yield put(ProfileActions.getProfileRequest());
   } catch (error) {
     yield put(AuthActions.registerFailure(error.response.data?.message));
   }
