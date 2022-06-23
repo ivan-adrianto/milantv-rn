@@ -1,13 +1,22 @@
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   StyleSheet,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React from 'react';
-import {IconCheck, IconClose, IconEdit, ImageHeader} from '../../assets';
+import {
+  IconCheck,
+  IconClose,
+  IconEdit,
+  IconProfile,
+  ImageHeader,
+  SignUpImage,
+} from '../../assets';
 import {Button, Text} from '../../components';
 import {useState} from 'react';
 import {useEffect} from 'react';
@@ -15,29 +24,114 @@ import {useSelector} from 'react-redux';
 import {uriFormatter} from '../../helpers/uri';
 import {useDispatch} from 'react-redux';
 import {Creators as AuthActions} from '../../redux/AuthRedux';
+import {Creators as ProfileActions} from '../../redux/ProfileRedux';
 import * as Keychain from 'react-native-keychain';
 import {removeBearerToken} from '../../services/apiServices';
+import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
+import {useIsFocused} from '@react-navigation/native';
 
 const Profile = ({navigation}) => {
+  const isFocused = useIsFocused();
+
   const dispatch = useDispatch();
   const logout = () => dispatch(AuthActions.logout());
+  const updateProfile = data =>
+    dispatch(ProfileActions.updateProfileRequest(data));
+  const resetState = () => dispatch(ProfileActions.resetStateUpdateProfile());
+  const getProfile = () => dispatch(ProfileActions.getProfileRequest());
+
   const data = useSelector(state => state.profile.dataGetProfile);
+  const isLoading = useSelector(state => state.profile.isLoadingUpdateProfile);
+  const error = useSelector(state => state.profile.errorUpdateProfile);
+  const dataUpdate = useSelector(state => state.profile.dataUpdateProfile);
 
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [photo, setPhoto] = useState('');
 
   useEffect(() => {
-    setName(data?.fullname);
-    setUsername(data?.username);
-    setEmail(data?.email);
-  }, []);
+    if (isFocused) {
+      setName(data?.fullname);
+      setUsername(data?.username);
+      setEmail(data?.email);
+      setPhoto(data?.avatar);
+    }
+  }, [isFocused]);
 
+  useEffect(() => {
+    if (dataUpdate) {
+      showToast('Profile updated');
+      getProfile();
+      navigation.navigate('HomeTab');
+      resetState();
+    } else if (error) {
+      showToast(error);
+      resetState();
+    }
+  }, [dataUpdate, error]);
 
   const logoutHandler = () => {
     Keychain.resetInternetCredentials('token');
     logout();
     removeBearerToken();
+  };
+
+  const validate = () => {
+    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    let result = false;
+    if (!username) {
+      showToast('Username is required');
+    } else if (!name) {
+      showToast('Name is required');
+    } else if (!email) {
+      showToast('Email is required');
+    } else if (!regex.test(email)) {
+      showToast('Email is not valid');
+    } else {
+      result = true;
+    }
+    return result;
+  };
+
+  const updateProfileHandler = () => {
+    if (validate()) {
+      const payload = {
+        fullname: name,
+        username,
+        email,
+        photo,
+      };
+      ((photo === data?.avatar) || !photo) && delete payload.photo;
+      updateProfile(payload);
+    }
+  };
+
+  const showToast = message => {
+    ToastAndroid.showWithGravity(
+      message,
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER,
+    );
+  };
+
+  const uploadPhoto = async () => {
+    try {
+      const pickerResult = await DocumentPicker.pickSingle({
+        presentationStyle: 'fullScreen',
+        type: 'image/*',
+      });
+      if (pickerResult.size > 5000000) {
+        showToast('Image size too large');
+      } else {
+        RNFS.readFile(pickerResult.uri, 'base64').then(res => {
+          setPhoto(`data:image/jpeg;base64,${res}`);
+        });
+      }
+    } catch (error) {
+      DocumentPicker.isCancel(() => {});
+    }
   };
 
   return (
@@ -51,15 +145,23 @@ const Profile = ({navigation}) => {
             Edit Profile
           </Text>
         </View>
-        <IconCheck height={23} width={25} />
+        {isLoading ? (
+          <ActivityIndicator color={'white'} />
+        ) : (
+          <TouchableOpacity onPress={updateProfileHandler}>
+            <IconCheck height={23} width={25} />
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.photoProfileContainer}>
-          <Image
-            source={{uri: uriFormatter(data?.avatar)}}
-            style={styles.photoProfile}
-          />
-          <IconEdit height={30} width={30} style={styles.iconEdit} />
+          <TouchableOpacity onPress={uploadPhoto}>
+            <Image
+              source={photo ? {uri: uriFormatter(photo)} : SignUpImage}
+              style={styles.photoProfile}
+            />
+            <IconEdit height={30} width={30} style={styles.iconEdit(photo)} />
+          </TouchableOpacity>
         </View>
         <TextInput
           placeholderTextColor={'white'}
@@ -82,7 +184,9 @@ const Profile = ({navigation}) => {
           value={email}
           onChangeText={text => setEmail(text)}
         />
-        <TouchableOpacity onPress={logoutHandler} style={styles.buttonContainer}>
+        <TouchableOpacity
+          onPress={logoutHandler}
+          style={styles.buttonContainer}>
           <Button type={'login'}>LOGOUT</Button>
         </TouchableOpacity>
       </View>
@@ -124,11 +228,11 @@ const styles = StyleSheet.create({
     width: 107,
     borderRadius: 107 / 2,
   },
-  iconEdit: {
+  iconEdit: photo => ({
     position: 'relative',
-    marginTop: -33,
-    left: 35,
-  },
+    marginTop: photo ? -33 : -38,
+    left: 74,
+  }),
   contentContainer: {
     paddingHorizontal: 31,
   },

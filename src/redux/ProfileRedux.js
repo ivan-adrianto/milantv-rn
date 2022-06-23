@@ -8,6 +8,12 @@ export const {Types, Creators} = createActions({
   getProfileRequest: ['data'],
   getProfileSuccess: ['payload'],
   getProfileFailure: ['error'],
+
+  // update profile
+  updateProfileRequest: ['data'],
+  updateProfileSuccess: ['payload'],
+  updateProfileFailure: ['error'],
+  resetStateUpdateProfile: ['data'],
 });
 
 /* ------------- Initial State ------------- */
@@ -16,11 +22,14 @@ export const INITIAL_STATE = Immutable({
   isLoadingGetProfile: false,
   dataGetProfile: null,
   errorGetProfile: null,
+  isLoadingUpdateProfile: false,
+  dataUpdateProfile: null,
+  errorUpdateProfile: null,
 });
 
 /* ------------- Reducers ------------- */
 
-// Register
+// Get Profile
 export const getProfileRequest = state =>
   state.merge({isLoadingGetProfile: true, dataGetProfile: null});
 
@@ -42,6 +51,34 @@ export const getProfileFailure = (state, action) => {
   });
 };
 
+// Update Profile
+export const updateProfileRequest = state =>
+  state.merge({isLoadingUpdateProfile: true, dataUpdateProfile: null});
+
+export const updateProfileSuccess = (state, action) => {
+  const {payload} = action;
+  return state.merge({
+    isLoadingUpdateProfile: false,
+    errorUpdateProfile: null,
+    dataUpdateProfile: payload,
+  });
+};
+
+export const updateProfileFailure = (state, action) => {
+  const {error} = action;
+  return state.merge({
+    isLoadingUpdateProfile: false,
+    errorUpdateProfile: error,
+    dataUpdateProfile: null,
+  });
+};
+
+export const resetStateUpdateProfile = state =>
+  state.merge({
+    isLoadingUpdateProfile: false,
+    dataUpdateProfile: null,
+    errorUpdateProfile: null,
+  });
 /* ------------- Hookup Reducers To Type ------------- */
 
 export const profileReducer = createReducer(INITIAL_STATE, {
@@ -49,4 +86,10 @@ export const profileReducer = createReducer(INITIAL_STATE, {
   [Types.GET_PROFILE_REQUEST]: getProfileRequest,
   [Types.GET_PROFILE_SUCCESS]: getProfileSuccess,
   [Types.GET_PROFILE_FAILURE]: getProfileFailure,
+
+  // update profile
+  [Types.UPDATE_PROFILE_REQUEST]: updateProfileRequest,
+  [Types.UPDATE_PROFILE_SUCCESS]: updateProfileSuccess,
+  [Types.UPDATE_PROFILE_FAILURE]: updateProfileFailure,
+  [Types.RESET_STATE_UPDATE_PROFILE]: resetStateUpdateProfile,
 });

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Home, Splash, Login, SignUp, MovieDetail, MovieReviews} from '../pages';
@@ -78,7 +78,7 @@ const Router = () => {
     if (token) {
       restoreLoginSession();
       addBearerToken(token.password);
-      getProfile()
+      getProfile();
     }
     setLoading(false);
   };

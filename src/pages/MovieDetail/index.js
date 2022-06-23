@@ -59,7 +59,7 @@ const MovieDetail = ({route, navigation}) => {
   const callSearch = debounce(function (keyword) {
     getMovies({title: keyword});
     setKeyword(keyword);
-    navigation.navigate('Home');
+    navigation.navigate('HomeTab');
   }, 500);
 
   const onSearch = keyword => {

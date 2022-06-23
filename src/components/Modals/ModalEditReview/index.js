@@ -20,8 +20,6 @@ const ModalEditReview = ({
   onHide,
   movieId,
   dataReview,
-  reviewId,
-  navigation,
 }) => {
   const dispatch = useDispatch();
   const resetState = () => dispatch(MoviesActions.resetStateEditReview());
