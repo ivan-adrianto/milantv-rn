@@ -4,7 +4,6 @@ import Text from './Text';
 import ModalCreateReview from './Modals/ModalCreateReview';
 import ModalEditReview from './Modals/ModalEditReview';
 import ModalDeleteReview from './Modals/ModalDeleteReview';
-import SearchBar from './SearchBar';
 
 export {
   BottomNavigator,
@@ -12,6 +11,5 @@ export {
   Text,
   ModalCreateReview,
   ModalEditReview,
-  ModalDeleteReview,
-  SearchBar,
+  ModalDeleteReview
 };

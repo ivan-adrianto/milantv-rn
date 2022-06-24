@@ -42,7 +42,7 @@ const ModalEditReview = ({
 
   useEffect(() => {
     if (successEdit) {
-      showToastWithGravity('Review edited successfully');
+      showToastWithGravity('Review edited');
       onHide();
       resetState();
       getMyReviews();

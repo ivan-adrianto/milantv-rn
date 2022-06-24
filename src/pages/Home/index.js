@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   Linking,
+  Share,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useDispatch, useSelector} from 'react-redux';
@@ -27,9 +28,9 @@ import debounce from 'debounce';
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const getGenres = () => dispatch(MoviesActions.genreRequest());
-  const getMovies = (data) => dispatch(MoviesActions.moviesRequest(data));
+  const getMovies = data => dispatch(MoviesActions.moviesRequest(data));
   const setKeyword = data => dispatch(MoviesActions.setKeyword(data));
-  const setActiveGenre = data => dispatch(MoviesActions.setActiveGenre(data))
+  const setActiveGenre = data => dispatch(MoviesActions.setActiveGenre(data));
 
   const genres = useSelector(state => state.movies.dataGenre);
   const activeGenre = useSelector(state => state.movies.activeGenre);
@@ -73,6 +74,16 @@ const Home = ({navigation}) => {
     }
     setShownGenres(showAllGenres ? data?.slice(0, 4) : data);
     setShowAllGenres(!showAllGenres);
+  };
+
+  const onShare = async (movie) => {
+    try {
+      await Share.share({
+        message: `This movie is exciting! Let's review with me! https://milantv.com/detail/${movie.id}`,
+      });
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -125,13 +136,22 @@ const Home = ({navigation}) => {
                 />
                 <Text style={styles.movieDescription}>{item?.synopsis}</Text>
                 <View style={styles.movieFooter}>
-                  <View style={styles.reviewSection}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('MovieReviews', {
+                        id: item?.id,
+                        title: `Reviews on ${item?.title}`,
+                      })
+                    }
+                    style={styles.reviewSection}>
                     <IconReview width={18} height={18} />
                     <Text style={styles.reviewText}>
                       {item?.total_comments}
                     </Text>
-                  </View>
-                  <IconShare height={18} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => onShare(item)}>
+                    <IconShare height={18} />
+                  </TouchableOpacity>
                 </View>
               </TouchableOpacity>
             ))}
