@@ -1,8 +1,9 @@
 import {call, put, all, takeLatest} from 'redux-saga/effects';
 import {register, login} from '../services/auth';
 import {Types as AuthTypes, Creators as AuthActions} from '../redux/AuthRedux';
-import {Types as ProfileTypes, Creators as ProfileActions} from '../redux/ProfileRedux';
-import {addBearerToken} from '../services/apiServices';
+import {Creators as ProfileActions} from '../redux/ProfileRedux';
+import {Creators as MoviesActions} from '../redux/MoviesRedux';
+import {addBearerToken, removeBearerToken} from '../services/apiServices';
 import * as Keychain from 'react-native-keychain';
 
 /* ---- Register ---- */
@@ -10,7 +11,7 @@ function* registerSaga(action) {
   const data = action.data;
   try {
     const res = yield call(register, data);
-    yield call(addBearerToken, res.data.data.token)
+    yield call(addBearerToken, res.data.data.token);
     Keychain.setInternetCredentials('token', 'token', res.data.data.token);
     yield put(AuthActions.registerSuccess(res.data));
     yield put(ProfileActions.getProfileRequest());
@@ -29,7 +30,7 @@ function* loginSaga(action) {
   try {
     const res = yield call(login, data);
     yield put(AuthActions.loginSuccess(res.data.data));
-    yield call(addBearerToken, res.data.data.token)
+    yield call(addBearerToken, res.data.data.token);
     Keychain.setInternetCredentials('token', 'token', res.data.data.token);
     yield put(ProfileActions.getProfileRequest());
   } catch (error) {
@@ -41,6 +42,24 @@ export function* loginRequestSaga() {
   yield takeLatest(AuthTypes.LOGIN_REQUEST, loginSaga);
 }
 
+/* ---- Logout ---- */
+function* logoutSaga() {
+  try {
+    yield call(removeBearerToken);
+    yield put(MoviesActions.setKeyword(''));
+    yield put(MoviesActions.setActiveGenre(''));
+    Keychain.resetInternetCredentials('token');
+  } catch (error) {}
+}
+
+export function* logoutRequestSaga() {
+  yield takeLatest(AuthTypes.LOGOUT, logoutSaga);
+}
+
 export function* authSaga() {
-  yield all([call(registerRequestSaga), call(loginRequestSaga)]);
+  yield all([
+    call(registerRequestSaga),
+    call(loginRequestSaga),
+    call(logoutRequestSaga),
+  ]);
 }

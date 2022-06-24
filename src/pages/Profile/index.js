@@ -13,8 +13,6 @@ import {
   IconCheck,
   IconClose,
   IconEdit,
-  IconProfile,
-  ImageHeader,
   SignUpImage,
 } from '../../assets';
 import {Button, Text} from '../../components';
@@ -25,11 +23,9 @@ import {uriFormatter} from '../../helpers/uri';
 import {useDispatch} from 'react-redux';
 import {Creators as AuthActions} from '../../redux/AuthRedux';
 import {Creators as ProfileActions} from '../../redux/ProfileRedux';
-import * as Keychain from 'react-native-keychain';
-import {removeBearerToken} from '../../services/apiServices';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
-import {StackActions, useIsFocused} from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 
 const Profile = ({navigation}) => {
   const isFocused = useIsFocused();
@@ -72,12 +68,6 @@ const Profile = ({navigation}) => {
     }
   }, [dataUpdate, error]);
 
-  const logoutHandler = () => {
-    Keychain.resetInternetCredentials('token');
-    logout();
-    removeBearerToken();
-  };
-
   const validate = () => {
     const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     let result = false;
@@ -103,7 +93,7 @@ const Profile = ({navigation}) => {
         email,
         photo,
       };
-      ((photo === data?.avatar) || !photo) && delete payload.photo;
+      (photo === data?.avatar || !photo) && delete payload.photo;
       updateProfile(payload);
     }
   };
@@ -148,7 +138,9 @@ const Profile = ({navigation}) => {
         {isLoading ? (
           <ActivityIndicator color={'white'} />
         ) : (
-          <TouchableOpacity style={styles.iconCheck} onPress={updateProfileHandler}>
+          <TouchableOpacity
+            style={styles.iconCheck}
+            onPress={updateProfileHandler}>
             <IconCheck height={23} width={25} />
           </TouchableOpacity>
         )}
@@ -184,9 +176,7 @@ const Profile = ({navigation}) => {
           value={email}
           onChangeText={text => setEmail(text)}
         />
-        <TouchableOpacity
-          onPress={logoutHandler}
-          style={styles.buttonContainer}>
+        <TouchableOpacity onPress={logout} style={styles.buttonContainer}>
           <Button type={'login'}>LOGOUT</Button>
         </TouchableOpacity>
       </View>
@@ -220,7 +210,7 @@ const styles = StyleSheet.create({
   iconCheck: {
     paddingLeft: 10,
     paddingRight: 5,
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   photoProfileContainer: {
     marginTop: 70,
