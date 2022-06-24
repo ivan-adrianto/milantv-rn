@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {Linking, StyleSheet} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Home, Splash, Login, SignUp, MovieDetail, MovieReviews} from '../pages';
@@ -70,8 +70,10 @@ const Router = () => {
   const getProfile = () => dispatch(ProfileActions.getProfileRequest());
 
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+  const profile = useSelector(state => state.profile.dataGetProfile);
 
   const [loading, setLoading] = useState(true);
+  const [linkAccessed, setLinkAccessed] = useState(false);
 
   const getToken = async () => {
     const token = await Keychain.getInternetCredentials('token');
@@ -83,9 +85,25 @@ const Router = () => {
     setLoading(false);
   };
 
+  const handleURL = (url) => {
+    !linkAccessed && Linking.openURL(url);
+    setLinkAccessed(true);
+  };
+
   useEffect(() => {
     getToken();
   }, []);
+
+  useEffect(() => {
+    if (profile) {
+      Linking.getInitialURL()
+      .then(url => {
+        handleURL(url)
+      })
+      .catch(() => {});
+    }
+  }, [profile]);
+
   if (loading) {
     return (
       <Stack.Navigator initialRouteName="Splash">

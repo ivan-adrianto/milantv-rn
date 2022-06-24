@@ -7,17 +7,18 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Text} from '../../components';
 import {IconEdit, SignUpImage} from '../../assets';
 import {useDispatch, useSelector} from 'react-redux';
 import {Creators as AuthActions} from '../../redux/AuthRedux';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
+import {useIsFocused} from '@react-navigation/native';
 
 const SignUp = ({navigation}) => {
+  const isFocused = useIsFocused();
   const isLoading = useSelector(state => state.auth.isLoadingRegister);
-  const data = useSelector(state => state.auth.dataRegister);
   const error = useSelector(state => state.auth.errorRegister);
 
   const dispatch = useDispatch();
@@ -31,27 +32,39 @@ const SignUp = ({navigation}) => {
   const [photo, setPhoto] = useState('');
   const [base64Photo, setBase64Photo] = useState('');
 
-  if (error) {
-    showToast(error);
-    resetData();
-  }
+  useEffect(() => {
+    if (error && isFocused) {
+      showToast(error);
+      resetData();
+    }
+  }, [error, isFocused]);
 
   const uploadPhoto = async () => {
     try {
       const pickerResult = await DocumentPicker.pickSingle({
         presentationStyle: 'fullScreen',
+        type: 'image/*',
       });
-      setPhoto([pickerResult]);
-      RNFS.readFile(pickerResult.uri, 'base64').then(res => {
-        setBase64Photo(`data:image/jpeg;base64,${res}`);
-      });
+      if (pickerResult.size > 5000000) {
+        showToast('Image too large');
+      } else {
+        setPhoto([pickerResult]);
+        RNFS.readFile(pickerResult.uri, 'base64').then(res => {
+          setBase64Photo(`data:image/jpeg;base64,${res}`);
+        });
+      }
     } catch (error) {
+      DocumentPicker.isCancel(() => {});
       showToast(error);
     }
   };
 
   const showToast = message => {
-    ToastAndroid.show(message, ToastAndroid.SHORT);
+    ToastAndroid.showWithGravity(
+      message,
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER,
+    );
   };
 
   const validate = () => {
@@ -129,11 +142,14 @@ const SignUp = ({navigation}) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <Button
-          type="login"
-          onPress={submit}
-        >
-          {isLoading ? <ActivityIndicator/> : <Text color={'black'} bold size={18} >SIGN UP</Text> }
+        <Button type="login" onPress={submit}>
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <Text color={'black'} bold size={18}>
+              SIGN UP
+            </Text>
+          )}
         </Button>
       </View>
     </View>

@@ -5,10 +5,33 @@ import Router from './router';
 import {Provider} from 'react-redux';
 import store from './redux/store';
 
+const config = {
+  screens: {
+    MainApp: {
+      screens: {
+        HomeTab: {
+          screens: {
+            MovieDetail: {
+              path: 'detail/:id',
+              parse: {
+                id: id => id,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
 const App = () => {
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer
+        linking={{
+          prefixes: ["https://milantv.com"],
+          config,
+        }}>
         <Router />
       </NavigationContainer>
     </Provider>

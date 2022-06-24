@@ -64,7 +64,7 @@ const Profile = ({navigation}) => {
     if (dataUpdate) {
       showToast('Profile updated');
       getProfile();
-      navigation.navigate('HomeTab');
+      navigation.navigate('Home');
       resetState();
     } else if (error) {
       showToast(error);

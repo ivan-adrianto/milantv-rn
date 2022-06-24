@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Linking,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useDispatch, useSelector} from 'react-redux';
@@ -22,10 +23,10 @@ import {Text} from '../../components';
 import {useState} from 'react';
 import {useEffect} from 'react';
 import debounce from 'debounce';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 
 const Home = ({navigation}) => {
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
 
   const dispatch = useDispatch();
   const getGenres = () => dispatch(MoviesActions.genreRequest());
@@ -42,8 +43,8 @@ const Home = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    setSearch(keyword)
-  },[isFocused])
+    setSearch(keyword);
+  }, [isFocused]);
 
   useEffect(() => {
     setShownGenres(genres?.slice(0, 4));
@@ -52,7 +53,7 @@ const Home = ({navigation}) => {
   const [activeGenre, setActiveGenre] = useState('');
   const [showAllGenres, setShowAllGenres] = useState(false);
   const [shownGenres, setShownGenres] = useState(genres?.slice(0, 4));
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState('');
 
   const onClickGenre = genre => {
     if (genre === activeGenre) {
@@ -72,7 +73,7 @@ const Home = ({navigation}) => {
   const onChangeText = text => {
     callSearch(text);
     setSearch(text);
-  }
+  };
 
   const handleMoreGenres = () => {
     let index = shownGenres?.findIndex(genre => genre.id === activeGenre.id);
@@ -89,7 +90,11 @@ const Home = ({navigation}) => {
   return (
     <View style={styles.page}>
       <View>
-        <TextInput style={styles.searchBar} onChangeText={onChangeText} value={search} />
+        <TextInput
+          style={styles.searchBar}
+          onChangeText={onChangeText}
+          value={search}
+        />
         <IconSearch style={styles.searchIcon} />
         <View style={styles.genreHeader}>
           <Text style={styles.titleText}>Best Genre</Text>
@@ -144,7 +149,6 @@ const Home = ({navigation}) => {
             ))}
           </ScrollView>
         </View>
-        
       </View>
     </View>
   );

@@ -32,7 +32,7 @@ const ModalReview = ({visible, onHide, movieId}) => {
 
   useEffect(() => {
     if (dataReview) {
-      showToastWithGravity('Review created successfully');
+      showToastWithGravity('Review posted');
       onHide();
       resetState();
       getMyReviews();

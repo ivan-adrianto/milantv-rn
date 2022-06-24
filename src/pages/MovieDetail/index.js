@@ -1,8 +1,10 @@
 import {
   Image,
+  Linking,
   Modal,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -40,10 +42,9 @@ const MovieDetail = ({route, navigation}) => {
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
 
-
   useEffect(() => {
     getMovieDetail(route.params.id);
-  },[isFocused])
+  }, [isFocused]);
 
   useEffect(() => {
     setSearch(keyword);
@@ -59,12 +60,22 @@ const MovieDetail = ({route, navigation}) => {
   const callSearch = debounce(function (keyword) {
     getMovies({title: keyword});
     setKeyword(keyword);
-    navigation.navigate('HomeTab');
+    navigation.navigate('Home');
   }, 500);
 
   const onSearch = keyword => {
     callSearch(keyword);
     setSearch(keyword);
+  };
+
+  const onShare = async () => {
+    try {
+      await Share.share({
+        message: `This movie is exciting! Let's review with me! https://milantv.com/detail/${route.params.id}`,
+      });
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -141,7 +152,9 @@ const MovieDetail = ({route, navigation}) => {
               {movie?.total_comments}
             </Text>
           </TouchableOpacity>
-          <IconShare />
+          <TouchableOpacity onPress={onShare}>
+            <IconShare />
+          </TouchableOpacity>
         </View>
       </View>
       <ModalCreateReview

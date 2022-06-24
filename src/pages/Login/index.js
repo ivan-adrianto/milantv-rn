@@ -83,7 +83,6 @@ const Login = ({navigation}) => {
           onChangeText={text => setPassword(text)}
         />
       </View>
-      <Text style={styles.forgotPassword}>Forgot your password?</Text>
       <View style={styles.buttonContainer}>
         <Button type={'login'} onPress={submit}>
           {isLoading ? (
@@ -133,14 +132,6 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     fontFamily: 'Roboto-Regular',
     marginBottom: 10,
-  },
-  forgotPassword: {
-    color: 'white',
-    fontFamily: 'Roboto-Regular',
-    fontWeight: 'bold',
-    paddingHorizontal: 30,
-    textAlign: 'right',
-    marginTop: 19,
   },
   buttonContainer: {
     alignItems: 'center',
