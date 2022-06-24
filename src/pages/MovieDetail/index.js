@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   Linking,
   Modal,
@@ -34,21 +35,17 @@ const MovieDetail = ({route, navigation}) => {
   const getMovies = data => dispatch(MoviesActions.moviesRequest(data));
   const getMovieDetail = data => dispatch(MoviesActions.movieRequest(data));
   const setKeyword = data => dispatch(MoviesActions.setKeyword(data));
+  const setActiveGenre = data => dispatch(MoviesActions.setActiveGenre(data));
 
   const movie = useSelector(state => state.movies.dataMovie);
   const keyword = useSelector(state => state.movies.keyword);
   const dataCreateReview = useSelector(state => state.movies.dataCreateReview);
 
   const [showModal, setShowModal] = useState(false);
-  const [search, setSearch] = useState('');
 
   useEffect(() => {
     getMovieDetail(route.params.id);
   }, [isFocused]);
-
-  useEffect(() => {
-    setSearch(keyword);
-  }, []);
 
   useEffect(() => {
     if (dataCreateReview) {
@@ -57,16 +54,12 @@ const MovieDetail = ({route, navigation}) => {
     }
   }, [dataCreateReview]);
 
-  const callSearch = debounce(function (keyword) {
+  const onSearch = debounce(function (keyword) {
     getMovies({title: keyword});
     setKeyword(keyword);
+    setActiveGenre('');
     navigation.navigate('Home');
   }, 500);
-
-  const onSearch = keyword => {
-    callSearch(keyword);
-    setSearch(keyword);
-  };
 
   const onShare = async () => {
     try {
@@ -84,7 +77,7 @@ const MovieDetail = ({route, navigation}) => {
         <TextInput
           style={styles.searchBar}
           onChangeText={onSearch}
-          value={search}
+          defaultValue={keyword}
         />
         <IconSearch style={styles.searchIcon} />
       </View>
