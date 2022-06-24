@@ -29,7 +29,7 @@ import * as Keychain from 'react-native-keychain';
 import {removeBearerToken} from '../../services/apiServices';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
-import {useIsFocused} from '@react-navigation/native';
+import {StackActions, useIsFocused} from '@react-navigation/native';
 
 const Profile = ({navigation}) => {
   const isFocused = useIsFocused();
@@ -138,7 +138,7 @@ const Profile = ({navigation}) => {
     <ScrollView contentContainerStyle={styles.page}>
       <View style={styles.header}>
         <View style={styles.headerTitle}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.goBack(null)}>
             <IconClose height={35} width={35} />
           </TouchableOpacity>
           <Text bold size={18} style={styles.titleText}>
@@ -148,7 +148,7 @@ const Profile = ({navigation}) => {
         {isLoading ? (
           <ActivityIndicator color={'white'} />
         ) : (
-          <TouchableOpacity onPress={updateProfileHandler}>
+          <TouchableOpacity style={styles.iconCheck} onPress={updateProfileHandler}>
             <IconCheck height={23} width={25} />
           </TouchableOpacity>
         )}
@@ -216,6 +216,11 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginTop: 4,
+  },
+  iconCheck: {
+    paddingLeft: 10,
+    paddingRight: 5,
+    paddingVertical: 10
   },
   photoProfileContainer: {
     marginTop: 70,
