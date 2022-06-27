@@ -1,8 +1,8 @@
 import Axios from 'axios';
-import { IP_ADDRESS } from '../../environment';
+import { BASE_URL } from '../../environment';
 
 const api = Axios.create({
-  baseURL: `http://${IP_ADDRESS}:3000/`,
+  baseURL: BASE_URL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',

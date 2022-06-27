@@ -56,7 +56,7 @@ const ModalReview = ({visible, onHide, movieId}) => {
 
   const submit = () => {
     const data = {
-      movie_id: movieId,
+      movie_id: parseInt(movieId),
       rating,
       title,
       comment,

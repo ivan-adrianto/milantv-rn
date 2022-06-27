@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import Router from './router';
 import {Provider} from 'react-redux';
 import store from './redux/store';
+import {navigationRef} from './helpers/RootNavigation';
 
 const config = {
   screens: {
@@ -28,8 +29,9 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer
+        ref={navigationRef}
         linking={{
-          prefixes: ["https://milantv.com"],
+          prefixes: ['https://milantv.com'],
           config,
         }}>
         <Router />

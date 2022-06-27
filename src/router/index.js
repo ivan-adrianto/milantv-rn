@@ -12,6 +12,7 @@ import MyReviews from '../pages/MyReviews';
 import Profile from '../pages/Profile';
 import {addBearerToken} from '../services/apiServices';
 import {IconBack} from '../assets';
+import * as RootNavigation from '../helpers/RootNavigation';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -85,9 +86,12 @@ const Router = () => {
     setLoading(false);
   };
 
-  const handleURL = (url) => {
-    !linkAccessed && Linking.openURL(url);
-    setLinkAccessed(true);
+  const handleURL = url => {
+    if (url) {
+      const id = parseInt(url.split('/')[4]);
+      !linkAccessed && RootNavigation.navigate('MovieDetail', {id});
+      setLinkAccessed(true);
+    }
   };
 
   useEffect(() => {
@@ -97,10 +101,10 @@ const Router = () => {
   useEffect(() => {
     if (profile) {
       Linking.getInitialURL()
-      .then(url => {
-        handleURL(url)
-      })
-      .catch(() => {});
+        .then(url => {
+          handleURL(url);
+        })
+        .catch(() => {});
     }
   }, [profile]);
 
