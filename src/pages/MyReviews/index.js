@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   StyleSheet,
@@ -25,7 +26,8 @@ const MyReviews = () => {
   const getMyReviews = data => dispatch(MoviesActions.myReviewsRequest(data));
 
   const reviews = useSelector(state => state.movies.dataMyReviews);
-  
+  const isLoading = useSelector(state => state.movies.isLoadingMyReviews);
+
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [movieId, setMovieId] = useState('');
@@ -50,50 +52,71 @@ const MyReviews = () => {
     <ScrollView
       contentContainerStyle={styles.page}
       showsVerticalScrollIndicator={false}>
-      {reviews?.map((review, index) => (
-        <View key={index} style={styles.reviewContainer}>
-          <View style={styles.headerSection}>
-            <Image source={{uri: review?.movie?.poster}} style={styles.poster} />
-            <View style={styles.movieDetails}>
-              <Text
-                style={styles.movieTitle}
-                color={'black'}
-                bold
-                size={18}
-                numberOfLines={1}>
-                {review?.movie?.title}
-                <Text color={'black'} bold size={18}>{` (${new Date(
-                  review?.movie?.release_date,
-                ).getFullYear()})`}</Text>
-              </Text>
-              <Text color={'black'} size={14}>
-                Reviewed {dateFormatter(review?.updated_at)}
-              </Text>
-              <View style={styles.ratingContainer}>
-                <IconRatingActive style={styles.ratingIcon} />
-                <Text color={'black'} bold>
-                  {review?.rating}
-                  <Text color={'black'}>/10</Text>
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size={40} color={'white'} />
+        </View>
+      ) : reviews?.length > 0 ? (
+        reviews?.map((review, index) => (
+          <View key={index} style={styles.reviewContainer}>
+            <View style={styles.headerSection}>
+              <Image
+                source={{uri: review?.movie?.poster}}
+                style={styles.poster}
+              />
+              <View style={styles.movieDetails}>
+                <Text
+                  style={styles.movieTitle}
+                  color={'black'}
+                  bold
+                  size={18}
+                  numberOfLines={1}>
+                  {review?.movie?.title}
+                  <Text color={'black'} bold size={18}>{` (${new Date(
+                    review?.movie?.release_date,
+                  ).getFullYear()})`}</Text>
                 </Text>
-              </View>
-              <View style={styles.actionContainer}>
-                <TouchableOpacity onPress={() => editReview(review)} style={styles.actionButton}>
-                  <IconEdit height={30} width={30} style={styles.iconEdit} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteReview(review)} style={styles.actionButton}>
-                  <IconDelete height={30} width={30} />
-                </TouchableOpacity>
+                <Text color={'black'} size={14}>
+                  Reviewed {dateFormatter(review?.updated_at)}
+                </Text>
+                <View style={styles.ratingContainer}>
+                  <IconRatingActive style={styles.ratingIcon} />
+                  <Text color={'black'} bold>
+                    {review?.rating}
+                    <Text color={'black'}>/10</Text>
+                  </Text>
+                </View>
+                <View style={styles.actionContainer}>
+                  <TouchableOpacity
+                    onPress={() => editReview(review)}
+                    style={styles.actionButton}>
+                    <IconEdit height={30} width={30} style={styles.iconEdit} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => deleteReview(review)}
+                    style={styles.actionButton}>
+                    <IconDelete height={30} width={30} />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
+            <View style={styles.contentSection}>
+              <Text color={'black'} bold style={styles.headline}>
+                {review?.title}
+              </Text>
+              <Text color={'black'}>{review?.comment}</Text>
+            </View>
           </View>
-          <View style={styles.contentSection}>
-            <Text color={'black'} bold style={styles.headline}>
-              {review?.title}
-            </Text>
-            <Text color={'black'}>{review?.comment}</Text>
-          </View>
+        ))
+      ) : (
+        <View>
+
+        <Text size={28} bold color={'white'}>
+          You have not reviewed any movie yet...
+        </Text>
+        <Text color={"white"}>Your reviews will be displayed here once you have reviewed a movie</Text>
         </View>
-      ))}
+      )}
       <ModalEditReview
         visible={showModalEdit}
         onHide={() => setShowModalEdit(false)}
@@ -117,6 +140,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     paddingVertical: 20,
     paddingHorizontal: 15,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   reviewContainer: {
     backgroundColor: 'white',

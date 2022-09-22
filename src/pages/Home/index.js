@@ -9,6 +9,7 @@ import {
   Image,
   Linking,
   Share,
+  ActivityIndicator,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useDispatch, useSelector} from 'react-redux';
@@ -35,6 +36,7 @@ const Home = ({navigation}) => {
   const genres = useSelector(state => state.movies.dataGenre);
   const activeGenre = useSelector(state => state.movies.activeGenre);
   const movies = useSelector(state => state.movies.dataMovies);
+  const isLoading = useSelector(state => state.movies.isLoadingMovies);
   const keyword = useSelector(state => state.movies.keyword);
 
   useEffect(() => {
@@ -76,7 +78,7 @@ const Home = ({navigation}) => {
     setShowAllGenres(!showAllGenres);
   };
 
-  const onShare = async (movie) => {
+  const onShare = async movie => {
     try {
       await Share.share({
         message: `This movie is exciting! Let's review with me! https://milantv.com/detail/${movie.id}`,
@@ -123,38 +125,44 @@ const Home = ({navigation}) => {
                 ? `Editor Picks ${activeGenre.name} Movies`
                 : 'Editor Picks Movies'}
             </Text>
-            {movies?.map((item, index) => (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('MovieDetail', {id: item.id})
-                }
-                key={index}
-                style={styles.movieItem}>
-                <Image
-                  source={{uri: item?.banner}}
-                  style={styles.movieThumbnail}
-                />
-                <Text style={styles.movieDescription}>{item?.synopsis}</Text>
-                <View style={styles.movieFooter}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('MovieReviews', {
-                        id: item?.id,
-                        title: `Reviews on ${item?.title}`,
-                      })
-                    }
-                    style={styles.reviewSection}>
-                    <IconReview width={18} height={18} />
-                    <Text style={styles.reviewText}>
-                      {item?.total_comments}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => onShare(item)}>
-                    <IconShare height={18} />
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            ))}
+            {isLoading ? (
+              <View style={styles.loadingContainer} >
+                <ActivityIndicator color={'white'} size={40} />
+              </View>
+            ) : (
+              movies?.map((item, index) => (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('MovieDetail', {id: item.id})
+                  }
+                  key={index}
+                  style={styles.movieItem}>
+                  <Image
+                    source={{uri: item?.banner}}
+                    style={styles.movieThumbnail}
+                  />
+                  <Text style={styles.movieDescription}>{item?.synopsis}</Text>
+                  <View style={styles.movieFooter}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate('MovieReviews', {
+                          id: item?.id,
+                          title: `Reviews on ${item?.title}`,
+                        })
+                      }
+                      style={styles.reviewSection}>
+                      <IconReview width={18} height={18} />
+                      <Text style={styles.reviewText}>
+                        {item?.total_comments}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => onShare(item)}>
+                      <IconShare height={18} />
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              ))
+            )}
           </ScrollView>
         </View>
       </View>
@@ -221,6 +229,11 @@ const styles = StyleSheet.create({
     color: active ? 'white' : 'black',
     marginLeft: 4,
   }),
+  loadingContainer: {
+    alignItems: "center",
+    height: screenHeight - 320,
+    justifyContent: "center",
+  },
   moviesContainer: {
     height: screenHeight - 230,
   },
